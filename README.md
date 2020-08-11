@@ -7,4 +7,4 @@ The projects are:
 
 2. A game of black-jack that prints out the cards and randomly generates a score for the dealer (computer). You have the options to ask for more cards or to stand whith your score
 
-3. A simple game of tick-tack-toe that can be played against a computer that plays randomly or against a second player
+3. A simple game of tick-tack-toe that can be played against a computer that plays randomly.
