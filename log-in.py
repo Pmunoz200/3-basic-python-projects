@@ -8,17 +8,17 @@ class Authenticate:
 
     datos = {}
     
-    # Crear una cuenta con user y password y guardarlo en el .json
+    # Creats an account with username and password
     def creat_acc(self):
         with open('data_base.json', 'r+') as json_file:
                 data = json.load(json_file)
-                self.username = input('Ingrese un usuario: ')
+                self.username = input('Add username: ')
                 cont = 0
                 for i in data:
                     if i == self.username:
                         cont +=1
         if cont == 0:
-            self.password = getpass.getpass('Ingrese la contraseña: ')
+            self.password = getpass.getpass('Password: ')
             self.datos.update({self.username: {'Password': self.password}})
             return True
         else:
@@ -26,10 +26,10 @@ class Authenticate:
             self.username= ''
             self.password = ''
     
-    #Subir los archivos creados con el creat_acc
+    #Uploads the new username and password to the .json file
 
     def update(self):
-        #Revisar si el archivo esta vacio
+        #Checks if the .json file is empty
         if os.path.getsize('/Users/pablomunoz/Documents/Programacion/5-Proyects_py/data_base.json') == 0:
             with open('data_base.json','w') as json_file:
                 json.dump(self.datos,json_file, indent = 3)
@@ -40,29 +40,30 @@ class Authenticate:
                 json_file.seek(0)
                 json.dump(data,json_file,indent = 3)
     
-    #Log-in revisando mediante iteración el archivo
+    #Log-in checking if the user and password match in the .json file via iteration
     def log_in(self):
         with open('data_base.json', 'r+') as json_file:
                 data = json.load(json_file)
-                self.username = input('Ingrese su usuario: ')
+                self.username = input('Username: ')
                 for i in data:
                     if self.username == i:
-                        self.password = getpass.getpass('Ingrese la contraseña: ')
+                        self.password = getpass.getpass('Password: ')
                         if data[i]['Password'] == self.password:
                             return True
-                
+
+# A class to add the grades to the different users once ligged-in
 class Notas:
 
     def __init__(self, username):
         self.state = True
         self.user = username
-        #Definir la primera acción al entrar a notas
-        self.command = input('Que desea hacer? \n - Añadir clase: "A" \n - Revisar tus clases y notas "R"\n - Volver al menú de autenticación "B"\n - Añadir notas "N"\n     ').lower()
+        #Def the first command once in grades
+        self.command = input('What whould you like to do? \n - Add a class: "A" \n - Check your classes and grades "R"\n - Back to auth. menu "B"\n - Add grades "N"\n     ').lower()
         if self.command == 'b':
             self.state = False
     
     def add_class(self):
-        clase = input('Ingrese el nombre de la asignatura: ')
+        clase = input('Input the class name: ')
         with open('data_base.json', 'r+') as json_file:
             data = json.load(json_file)
             cont = 0
@@ -87,19 +88,19 @@ class Notas:
             if cont == 1:
                 print(data[self.user]['Notas'])
             else:
-                print('No ha creado ningúna clase')
+                print('There are no classes created')
         self.add_State()
 
     def add_evaluations(self):
-        print('A qué matería desea añadir las evaluaciones?\n')
+        print('Which class do you want to add the evaluation?\n')
         with open('data_base.json','r+') as json_file:
             data = json.load(json_file)
             for d in data[self.user]['Notas'].keys():
                 print (d)
-            clase = input('Ingrese el nombre de la clase que se muestra: ')
-            evla = input('Ingrese el nombre de la evaluacion: ')
-            porc = input('Ingrese el valor de la evaluación: ')
-            nota = input('Igrese la nota sacada: ')
+            clase = input('Input one of the classes shown: ')
+            evla = input('Input the evaluation\'s name: ')
+            porc = input('What is the percentage of the evaluation?: ')
+            nota = input('Input the grade: ')
             conjun = [int(porc), int(nota)]
             data[self.user]['Notas'][clase].update({evla : conjun})
             json_file.seek(0)
@@ -110,7 +111,7 @@ class Notas:
 
 
     def add_State(self):
-        self.command = input('Que desea hacer? \n - Añadir clase: "A" \n - Revisar tus clases y notas "R"\n - Volver al menú de autenticación "B"\n - Añadir notas "N"\n     ').lower()
+        self.command = input('What whould you like to do? \n - Add a class: "A" \n - Check your classes and grades "R"\n - Back to auth. menu "B"\n - Add grades "N"\n     ').lower()
 
     
     def commander(self):
@@ -127,18 +128,18 @@ active = True
 user = Authenticate()
 
 while active:
-    state = input('Ingrese: \n "L" para log in \n "C" para crear perfil \n "E" para salir: ').lower()
+    state = input('Auht. menu: \n "L" for log in \n "C" to create an account \n "E" exit program: ').lower()
     if state == 'l':
         value = user.log_in()
         if value:
-            print('Bienvenido')
+            print('Welcome')
             ntas = Notas(user.username)
             check = True
             while check:
                 ntas.commander()
                 check = ntas.state
         else:
-            print ('Usuario o contraseña equivocada')
+            print ('Wrong username or password')
     elif state == 'c':
         if user.creat_acc():
             user.update()
@@ -146,4 +147,4 @@ while active:
     elif state == 'e':
         active = False
     else:
-        print('ingrese un comando valido')
+        print('Input a valid command.')
